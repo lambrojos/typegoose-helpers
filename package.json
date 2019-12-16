@@ -1,0 +1,11 @@
+{
+  "name": "typegoose-helpers",
+  "version": "0.0.1",
+  "description": "Some almost typesafe helpers to streamline work with typegoose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
