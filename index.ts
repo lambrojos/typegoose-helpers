@@ -111,7 +111,7 @@ export const del = <T>(
     .lean()
     .then((res: T) => toJSON(existsOrThrow(res)));
 
-export const existsOrThrow = <T>(something: T | null): NonNullable<T> => {
+export const existsOrThrow = <T>(something: T | null): T => {
   if (!something ) {
     throw new NotFoundException();
   } else {
@@ -121,7 +121,6 @@ export const existsOrThrow = <T>(something: T | null): NonNullable<T> => {
 
 export const ifExists = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
-  // TODO mandate user id
   filter: Filter<T>,
   ): Promise<boolean> =>
     model.exists(filter).then(existsOrThrow);
