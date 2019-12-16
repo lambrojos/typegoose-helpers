@@ -2,27 +2,11 @@
  * Almost type safe lean db operations
  */
 
-import { TypegooseModule } from 'nestjs-typegoose';
-import { ConfigService, ConfigModule } from 'nestjs-config';
-import { resolve } from 'path';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { AnyParamConstructor } from '@typegoose/typegoose/lib/types';
 import { NotFoundException } from '@nestjs/common';
 import { ObjectID } from 'bson';
-import { cursorTo } from 'readline';
 import { ApiModelProperty } from '@nestjs/swagger';
-
-export const db = () => [
-  ConfigModule.load(resolve(__dirname, './**/config.{ts,js}')),
-  TypegooseModule.forRootAsync({
-    useFactory: (config: ConfigService) => ({
-      uri: config.get('config.DATABASE_URI'),
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
-    }),
-    inject: [ConfigService],
-  }),
-];
 
 export const toJSON = <T extends Timestamped>(d: T): T => {
   d.id = d._id;
@@ -87,7 +71,7 @@ export const paginate = <T extends Timestamped, K extends keyof T>(
     return model.exists({
       [cursor.field]: { $lt: lastVal},
       ...query,
-    }).then(hasMore => ({
+    }).then((hasMore: boolean) => ({
       cursor: { ...cursor, from: lastVal },
       items: items.map(toJSON),
       hasMore,
@@ -103,13 +87,13 @@ export const update = <T>(
   .findOneAndUpdate(filter,
     { $set: updateData }, { new: true })
   .lean()
-  .then(res => toJSON(existsOrThrow(res)));
+  .then((res: T) => toJSON(existsOrThrow(res)));
 
 export const create = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   newData: Partial<T>,
 ): Promise<T> => model.create(newData)
-  .then((d) => toJSON(d.toJSON()));
+  .then((d: DocumentType<T>) => toJSON(d.toJSON()));
 
 export const findOne = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
@@ -117,7 +101,7 @@ export const findOne = <T>(
   projection?: string[], // could containe "-<propertyname>" so we can't keyof T
 ): Promise<T> => model.findOne(filter, projection)
   .lean()
-  .then(res => toJSON(existsOrThrow(res)));
+  .then((res: T) => toJSON(existsOrThrow(res)));
 
 export const del = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
@@ -125,7 +109,7 @@ export const del = <T>(
 ): Promise<T> => model
     .findByIdAndDelete(filter)
     .lean()
-    .then(res => toJSON(existsOrThrow(res)));
+    .then((res: T) => toJSON(existsOrThrow(res)));
 
 export const existsOrThrow = <T>(something: T | null): NonNullable<T> => {
   if (!something ) {
