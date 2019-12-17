@@ -1,6 +1,7 @@
 # Typegoose helpers
 
 Just a proof of concpet of some canned typegoose queries and _id conversion.
+Meant to be used alongside nestjs
 
 Tries to be a somewhat typesafe way of interacting with mongoose. 
 

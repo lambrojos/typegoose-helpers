@@ -8,6 +8,22 @@ import { NotFoundException } from '@nestjs/common';
 import { ObjectID } from 'bson';
 import { ApiModelProperty } from '@nestjs/swagger';
 
+import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
+
+@Injectable()
+export class ParseObjId implements PipeTransform<string, ObjectID> {
+  transform(value: string): ObjectID {
+    try {
+        return new ObjectID(value);
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+}
+
+export const objId = new ParseObjId();
+
+
 export const toJSON = <T extends Timestamped>(d: T): T => {
   d.id = d._id;
   return d;
