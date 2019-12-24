@@ -96,7 +96,7 @@ export const paginate = <T extends Timestamped, K extends keyof T>(
     }
     const lastVal = getLastValue(items, cursor.field);
     return model.exists({
-      [cursor.field]: { $lt: lastVal},
+      [cursor.field]: { $gt: lastVal},
       ...query,
     }).then((hasMore: boolean) => ({
       cursor: { ...cursor, from: lastVal },

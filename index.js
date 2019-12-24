@@ -86,7 +86,7 @@ exports.paginate = function (model, query, cursorOpts, projection) {
             });
         }
         var lastVal = getLastValue(items, cursor.field);
-        return model.exists(__assign((_a = {}, _a[cursor.field] = { $lt: lastVal }, _a), query)).then(function (hasMore) { return ({
+        return model.exists(__assign((_a = {}, _a[cursor.field] = { $gt: lastVal }, _a), query)).then(function (hasMore) { return ({
             cursor: __assign(__assign({}, cursor), { from: lastVal }),
             items: items.map(exports.toJSON),
             hasMore: hasMore,
