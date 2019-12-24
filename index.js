@@ -21,7 +21,27 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = require("@nestjs/common");
+var bson_1 = require("bson");
 var swagger_1 = require("@nestjs/swagger");
+var common_2 = require("@nestjs/common");
+var ParseObjId = /** @class */ (function () {
+    function ParseObjId() {
+    }
+    ParseObjId.prototype.transform = function (value) {
+        try {
+            return new bson_1.ObjectID(value);
+        }
+        catch (e) {
+            throw new common_2.BadRequestException(e.message);
+        }
+    };
+    ParseObjId = __decorate([
+        common_2.Injectable()
+    ], ParseObjId);
+    return ParseObjId;
+}());
+exports.ParseObjId = ParseObjId;
+exports.objId = new ParseObjId();
 exports.toJSON = function (d) {
     d.id = d._id;
     return d;

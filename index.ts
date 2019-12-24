@@ -23,13 +23,24 @@ export class ParseObjId implements PipeTransform<string, ObjectID> {
 
 export const objId = new ParseObjId();
 
-
 export const toJSON = <T extends Timestamped>(d: T): T => {
   d.id = d._id;
   return d;
 };
 
-type Filter<T> = Partial<T> & {_id?: string | ObjectID};
+interface MongoOperators<T> {
+  $ne?: T | null;
+  $gt?: T;
+  $gte?: T;
+  $lt?: T;
+  $lte?: T;
+}
+
+type AllowOperators<T> = {
+  [P in keyof T]: T[P] | MongoOperators<T[P]>
+};
+
+type Filter<T> = AllowOperators<Partial<T>> & {_id?: string | ObjectID};
 interface Timestamped {
   _id?: string;
   id?: string;
@@ -140,4 +151,5 @@ export const ifExists = <T>(
   filter: Filter<T>,
   ): Promise<boolean> =>
     model.exists(filter).then(existsOrThrow);
+
 
