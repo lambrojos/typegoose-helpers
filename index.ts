@@ -122,13 +122,24 @@ export const create = <T>(
 ): Promise<T> => model.create(newData)
   .then((d: DocumentType<T>) => toJSON(d.toJSON()));
 
-export const findOne = <T>(
+export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-  projection?: string[], // could containe "-<propertyname>" so we can't keyof T
-): Promise<T> => model.findOne(filter, projection)
+): Promise<T>
+export function findOne<T>(
+  model: ReturnModelType<AnyParamConstructor<T>>,
+  filter: Filter<T>,
+  projection: string[],
+): Promise<Partial<T>>;
+export function findOne<T>(
+  model: ReturnModelType<AnyParamConstructor<T>>,
+  filter: Filter<T>,
+  projection?: string[],
+): Promise<Partial<T> | T> {
+  return model.findOne(filter, projection)
   .lean()
   .then((res: T) => toJSON(existsOrThrow(res)));
+}
 
 export const del = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
@@ -151,5 +162,4 @@ export const ifExists = <T>(
   filter: Filter<T>,
   ): Promise<boolean> =>
     model.exists(filter).then(existsOrThrow);
-
 

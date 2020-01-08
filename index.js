@@ -99,9 +99,12 @@ exports.update = function (model, filter, updateData) { return model
     .then(function (res) { return exports.toJSON(exports.existsOrThrow(res)); }); };
 exports.create = function (model, newData) { return model.create(newData)
     .then(function (d) { return exports.toJSON(d.toJSON()); }); };
-exports.findOne = function (model, filter, projection) { return model.findOne(filter, projection)
-    .lean()
-    .then(function (res) { return exports.toJSON(exports.existsOrThrow(res)); }); };
+function findOne(model, filter, projection) {
+    return model.findOne(filter, projection)
+        .lean()
+        .then(function (res) { return exports.toJSON(exports.existsOrThrow(res)); });
+}
+exports.findOne = findOne;
 exports.del = function (model, filter) { return model
     .findByIdAndDelete(filter)
     .lean()
