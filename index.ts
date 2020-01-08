@@ -41,6 +41,9 @@ type AllowOperators<T> = {
 };
 
 type Filter<T> = AllowOperators<Partial<T>> & {_id?: string | ObjectID};
+type Projected<T, P extends Array<keyof T>> = Pick<T, P[number]>;
+
+// TODO id handling is still very uncool
 interface Timestamped {
   _id?: string;
   id?: string;
@@ -122,19 +125,26 @@ export const create = <T>(
 ): Promise<T> => model.create(newData)
   .then((d: DocumentType<T>) => toJSON(d.toJSON()));
 
+/* type EntityProperties<T> = Array<keyof T>; */
+
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-): Promise<T>
+): Promise<T>;
+export function findOne<T, P extends Array<keyof T>>(
+  model: ReturnModelType<AnyParamConstructor<T>>,
+  filter: Filter<T>,
+  projection: P,
+): Promise<Projected<T, P>>;
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-  projection: string[],
+  projection: string | string[],
 ): Promise<Partial<T>>;
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-  projection?: string[],
+  projection?: string[] | string,
 ): Promise<Partial<T> | T> {
   return model.findOne(filter, projection)
   .lean()
@@ -162,4 +172,5 @@ export const ifExists = <T>(
   filter: Filter<T>,
   ): Promise<boolean> =>
     model.exists(filter).then(existsOrThrow);
+
 
