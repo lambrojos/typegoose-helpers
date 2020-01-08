@@ -1,6 +1,6 @@
 {
   "name": "typegoose-helpers",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Some almost typesafe helpers to streamline work with typegoose",
   "main": "index.js",
   "scripts": {
