@@ -119,10 +119,10 @@ export const update = <T>(
   .lean()
   .then((res: T) => toJSON(existsOrThrow(res)));
 
-export const create = <T>(
+export const create = <T, S extends Partial<T>>(
   model: ReturnModelType<AnyParamConstructor<T>>,
-  newData: Partial<T>,
-): Promise<T> => model.create(newData)
+    newData: S,
+  ): Promise<T & S> => model.create(newData)
   .then((d: DocumentType<T>) => toJSON(d.toJSON()));
 
 /* type EntityProperties<T> = Array<keyof T>; */
