@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" ",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
@@ -20,8 +20,14 @@
     "@nestjs/common": "^6.7.2",
     "@nestjs/swagger": "^3.1.0",
     "@typegoose/typegoose": "^6.1.7",
+    "@types/jest": "^24.0.25",
     "@types/mongoose": "^5.5.34",
+    "jest": "^24.9.0",
+    "mongodb-memory-server": "^6.2.1",
     "rxjs": "^6.5.3",
     "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "mongoose": "^5.8.7"
   }
 }
