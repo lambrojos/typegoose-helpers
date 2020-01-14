@@ -46,6 +46,7 @@ exports.toJSON = function (d) {
     d.id = d._id;
     return d;
 };
+// tslint:disable-next-line: max-classes-per-file
 var Cursor = /** @class */ (function () {
     function Cursor() {
     }

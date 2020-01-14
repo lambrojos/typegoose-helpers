@@ -23,9 +23,9 @@ export class ParseObjId implements PipeTransform<string, ObjectID> {
 
 export const objId = new ParseObjId();
 
-export const toJSON = <T extends Timestamped>(d: T): T => {
+export const toJSON = <T extends {_id: string, id?: string}>(d: T): WithId<T> => {
   d.id = d._id;
-  return d;
+  return d as WithId<T>;
 };
 
 interface MongoOperators<T> {
@@ -41,15 +41,15 @@ type AllowOperators<T> = {
 };
 
 type Filter<T> = AllowOperators<Partial<T>> & {_id?: string | ObjectID};
-type Projected<T, P extends Array<keyof T>> = Pick<T, P[number]>;
+type Projected<T, P extends Array<keyof T>> = Pick<T, P[number]> & {};
+type WithId<T> = T & { id: ObjectID, _id: ObjectID };
 
 // TODO id handling is still very uncool
 interface Timestamped {
-  _id?: string;
-  id?: string;
-  updatedAt?: Date | undefined;
+  updatedAt?: Date;
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Cursor<T, K extends keyof T> {
   @ApiModelProperty({ type: 'string'})
   field!: K;
@@ -90,7 +90,7 @@ export const paginate = <T extends Timestamped, K extends keyof T>(
   .sort({[cursor.field]: -1})
   .limit(cursor.limit ? +cursor.limit : 20)
   .lean()
-  .then((items: T[]) => {
+  .then((items: Array<T & {_id: string}>) => {
     if (items.length === 0) {
       return Promise.resolve({
         items,
@@ -117,38 +117,36 @@ export const update = <T>(
   .findOneAndUpdate(filter,
     { $set: updateData }, { new: true })
   .lean()
-  .then((res: T) => toJSON(existsOrThrow(res)));
+  .then((res: T & {_id: string}) => toJSON(existsOrThrow(res)));
 
 export const create = <T, S extends Partial<T>>(
   model: ReturnModelType<AnyParamConstructor<T>>,
-    newData: S,
+  newData: S,
   ): Promise<T & S> => model.create(newData)
   .then((d: DocumentType<T>) => toJSON(d.toJSON()));
-
-/* type EntityProperties<T> = Array<keyof T>; */
 
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-): Promise<T>;
+): Promise<WithId<T>>;
 export function findOne<T, P extends Array<keyof T>>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
   projection: P,
-): Promise<Projected<T, P>>;
+): Promise<WithId<Projected<T, P>>>;
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
   projection: string | string[],
-): Promise<Partial<T>>;
+): Promise<WithId<Partial<T>>>;
 export function findOne<T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
   projection?: string[] | string,
-): Promise<Partial<T> | T> {
+): Promise<WithId<Partial<T> | T>> {
   return model.findOne(filter, projection)
   .lean()
-  .then((res: T) => toJSON(existsOrThrow(res)));
+  .then((res: T & {_id: string}) => toJSON(existsOrThrow(res)));
 }
 
 export const del = <T>(
@@ -157,7 +155,7 @@ export const del = <T>(
 ): Promise<T> => model
     .findByIdAndDelete(filter)
     .lean()
-    .then((res: T) => toJSON(existsOrThrow(res)));
+    .then((res: T & {_id: string}) => toJSON(existsOrThrow(res)));
 
 export const existsOrThrow = <T>(something: T | null): T => {
   if (!something ) {
@@ -172,5 +170,4 @@ export const ifExists = <T>(
   filter: Filter<T>,
   ): Promise<boolean> =>
     model.exists(filter).then(existsOrThrow);
-
 
