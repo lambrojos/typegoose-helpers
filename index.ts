@@ -113,7 +113,7 @@ export const update = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
   updateData: Partial<T>,
-): Promise<T> => model
+): Promise<WithId<T>> => model
   .findOneAndUpdate(filter,
     { $set: updateData }, { new: true })
   .lean()
@@ -122,7 +122,7 @@ export const update = <T>(
 export const create = <T, S extends Partial<T>>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   newData: S,
-  ): Promise<T & S> => model.create(newData)
+  ): Promise<WithId<T & S>> => model.create(newData)
   .then((d: DocumentType<T>) => toJSON(d.toJSON()));
 
 export function findOne<T>(
@@ -152,7 +152,7 @@ export function findOne<T>(
 export const del = <T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   filter: Filter<T>,
-): Promise<T> => model
+): Promise<WithId<T>> => model
     .findByIdAndDelete(filter)
     .lean()
     .then((res: T & {_id: string}) => toJSON(existsOrThrow(res)));
