@@ -70,6 +70,15 @@ const getLastValue = <T>(items: T[], field: keyof T) => {
   return lastVal instanceof Date ? lastVal.toISOString() : lastVal;
 };
 
+export const find = <T>(
+  model: ReturnModelType<AnyParamConstructor<T>>,
+  query: Filter<T>,
+  projection?: Array<keyof T>,
+) => model
+  .find(query,projection)
+  .lean()
+  .then(result => result.map(toJSON))
+
 export const paginate = <T extends Timestamped, K extends keyof T>(
   model: ReturnModelType<AnyParamConstructor<T>>,
   query: Filter<T>,
