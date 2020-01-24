@@ -66,6 +66,10 @@ var getLastValue = function (items, field) {
     var lastVal = items[items.length - 1][field];
     return lastVal instanceof Date ? lastVal.toISOString() : lastVal;
 };
+exports.find = function (model, query, projection) { return model
+    .find(query, projection)
+    .lean()
+    .then(function (result) { return result.map(exports.toJSON); }); };
 exports.paginate = function (model, query, cursorOpts, projection) {
     var _a, _b;
     var cursor = Object.assign({
