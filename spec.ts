@@ -1,6 +1,6 @@
 // just testing types for now
 import { prop, getModelForClass } from "@typegoose/typegoose";
-import { create, existsOrThrow, find } from ".";
+import { create, existsOrThrow, find, findOne } from ".";
 import { ObjectID } from 'bson';
 
 class Document {
@@ -12,6 +12,8 @@ class Document {
 
   @prop()
   tags?: string;
+
+  _id!: 'BOB';
 }
 
 const documentModel = getModelForClass(Document);
@@ -30,8 +32,9 @@ describe('existorThrow', () => {
 })
 
 describe('find', () => {
-  it('finds', () => {
-    const a = find(documentModel, {name: 'carl'}, ['tags'])
+  it('finds', async () => {
+    const a = await find(documentModel, {name: 'carl'}, ['tags'])
+    const BOB: 'BOB' = a[0]._id
     ;
   })
 })

@@ -40,9 +40,10 @@ type AllowOperators<T> = {
   [P in keyof T]: T[P] | MongoOperators<T[P]>
 };
 
+export type TypeOfId<T> = T extends {_id: any} ? T['_id'] : ObjectID;
 export type Filter<T> = AllowOperators<Partial<T>> & {_id?: string | ObjectID};
-export type Projected<T, P extends Array<keyof T>> = Pick<T, P[number]> & {};
-export type WithId<T> = T & { id: ObjectID, _id: ObjectID };
+export type Projected<T, P extends Array<keyof T>> = Pick<T, P[number]> & {_id: TypeOfId<T>};
+export type WithId<T> = T & { id: TypeOfId<T>, _id: TypeOfId<T> };
 
 // TODO id handling is still very uncool
 interface Timestamped {
