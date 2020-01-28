@@ -13,7 +13,11 @@ class Document {
   @prop()
   tags?: string;
 
-  _id!: 'BOB';
+}
+
+class WithCustomId {
+  _id!: string;
+  name!: string;
 }
 
 const documentModel = getModelForClass(Document);
@@ -33,8 +37,8 @@ describe('existorThrow', () => {
 
 describe('find', () => {
   it('finds', async () => {
-    const a = await find(documentModel, {name: 'carl'}, ['tags'])
-    const BOB: 'BOB' = a[0]._id
+    const a = await find(getModelForClass(WithCustomId), {name: 'carl'}, ['name'])
+    const id: string = a[0]._id
     ;
   })
 })

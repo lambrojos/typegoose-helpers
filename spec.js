@@ -59,6 +59,11 @@ var Document = /** @class */ (function () {
     ], Document.prototype, "tags", void 0);
     return Document;
 }());
+var WithCustomId = /** @class */ (function () {
+    function WithCustomId() {
+    }
+    return WithCustomId;
+}());
 var documentModel = typegoose_1.getModelForClass(Document);
 describe('create', function () {
     it('creates stuff', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -81,7 +86,16 @@ describe('existorThrow', function () {
     });
 });
 describe('find', function () {
-    it('finds', function () {
-        var a = _1.find(documentModel, { name: 'carl' }, ['tags']);
-    });
+    it('finds', function () { return __awaiter(void 0, void 0, void 0, function () {
+        var a, id;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, _1.find(typegoose_1.getModelForClass(WithCustomId), { name: 'carl' }, ['name'])];
+                case 1:
+                    a = _a.sent();
+                    id = a[0]._id;
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 });
