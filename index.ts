@@ -35,6 +35,7 @@ interface MongoOperators<T> {
   $lt?: T;
   $lte?: T;
   $in?: T[];
+  $exists?: boolean;
 }
 
 type AllowOperators<T> = {
