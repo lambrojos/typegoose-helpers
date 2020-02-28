@@ -51,13 +51,13 @@ var Cursor = /** @class */ (function () {
     function Cursor() {
     }
     __decorate([
-        swagger_1.ApiModelProperty({ type: 'string' })
+        swagger_1.ApiProperty({ type: 'string' })
     ], Cursor.prototype, "field", void 0);
     __decorate([
-        swagger_1.ApiModelProperty({ type: 'string' })
+        swagger_1.ApiProperty({ type: 'string' })
     ], Cursor.prototype, "from", void 0);
     __decorate([
-        swagger_1.ApiModelProperty({ type: 'number' })
+        swagger_1.ApiProperty({ type: 'number' })
     ], Cursor.prototype, "limit", void 0);
     return Cursor;
 }());
