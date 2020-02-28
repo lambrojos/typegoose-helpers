@@ -6,7 +6,7 @@ import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
 import { AnyParamConstructor } from '@typegoose/typegoose/lib/types';
 import { NotFoundException } from '@nestjs/common';
 import { ObjectID } from 'bson';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 
@@ -54,11 +54,11 @@ interface Timestamped {
 
 // tslint:disable-next-line: max-classes-per-file
 export class Cursor<T, K extends keyof T> {
-  @ApiModelProperty({ type: 'string'})
+  @ApiProperty({ type: 'string'})
   field!: K;
-  @ApiModelProperty({ type: 'string'})
+  @ApiProperty({ type: 'string'})
   from?: T[K];
-  @ApiModelProperty({ type: 'number'})
+  @ApiProperty({ type: 'number'})
   limit?: string | number;
 }
 
