@@ -169,7 +169,7 @@ export const del = <T>(
     .lean()
     .then((res: T & {_id: string}) => toJSON(existsOrThrow(res)));
 
-export const existsOrThrow = <T>(something: T ): NonNullable<T> => {
+export const existsOrThrow = <T>(something: T ) => {
   if (!something ) {
     throw new NotFoundException();
   } else {
